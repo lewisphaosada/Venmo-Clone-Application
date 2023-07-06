@@ -1,11 +1,13 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
-import io.cucumber.java.en_old.Ac;
+import com.techelevator.tenmo.services.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class App {
 
@@ -14,8 +16,9 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
-    //your code
-    AccountService accountService = new AccountService();
+    private AccountService accountService = new AccountService();
+
+    private TransferService transferService = new TransferService();
 
     private AuthenticatedUser currentUser;
 
@@ -31,6 +34,7 @@ public class App {
             mainMenu();
         }
     }
+
     private void loginMenu() {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
@@ -95,31 +99,69 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-        double balance = accountService.getBalace();
-        System.out.println("Your current balance is :" + balance);
-		
-	}
+    private void viewCurrentBalance() {
+        try {
+            Double balance = accountService.updateBalance();
+            System.out.println("Your current balance is: " + balance);
+        } catch (Exception e) {
+            System.out.println("Failed to retrieve the current balance. Please try again later.");
+        }
+    }
 
-	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
-	}
+    private void viewTransferHistory() {
+        // TODO Auto-generated method stub
 
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
-	}
+    private void viewPendingRequests() {
+        // TODO Auto-generated method stub
 
-	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
-	}
+    }
+    private void requestBucks() {
+        // TODO Auto-generated method stub
 
+    }
+
+    private void sendBucks() {
+        if (currentUser == null) {
+            System.out.println("User not authenticated.");
+            return;
+        }
+
+        UserService userService = new UserService();
+        List<User> accounts = userService.getUserAccounts(currentUser);
+        if (accounts.isEmpty()) {
+            System.out.println("No user accounts found.");
+            return;
+        }
+
+        System.out.println("Available user accounts:");
+        for (int i = 0; i < accounts.size(); i++) {
+            User account = accounts.get(i);
+            System.out.println((i + 1) + ". " + account.getUsername());
+        }
+
+        int receiverIndex = consoleService.promptForMenuSelection("Enter the index of the user to send TE Bucks to: ");
+        if (receiverIndex < 0 || receiverIndex >= accounts.size()) {
+            System.out.println("Invalid user index.");
+            return;
+        }
+
+        BigDecimal amount = consoleService.promptForBigDecimal("Enter the amount to send: ");
+
+        User receiver = accounts.get(receiverIndex - 1); // Adjust index by subtracting 1
+
+        Transfer transfer = new Transfer();
+        transfer.setAccountFrom(currentUser.getUser().getId());
+        transfer.setAccountTo(receiver.getId());
+        transfer.setAmount(amount);
+
+        boolean success = transferService.sendTransfer(transfer).hasBody();
+        if (success) {
+            System.out.println("Transfer successful.");
+        } else {
+            System.out.println("Transfer failed.");
+        }
+    }
 }
+

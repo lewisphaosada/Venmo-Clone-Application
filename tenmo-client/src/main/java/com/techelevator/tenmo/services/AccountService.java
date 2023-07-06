@@ -9,9 +9,6 @@ import org.springframework.web.client.RestTemplate;
 
 public class AccountService {
 
-    String baseUrl = "http://localhost:8080";
-
-    RestTemplate restTemplate = new RestTemplate();
     String authToken = null;
 
     public void setAuthToken(String authToken) {
@@ -24,16 +21,16 @@ public class AccountService {
         return new HttpEntity<>(headers);
     }
 
-    public double getBalace() {
-        double balance = 0;
+    private String API_BASE_URL = "http://localhost:8080/";
+    private final RestTemplate restTemplate = new RestTemplate();
 
-        ResponseEntity<Double> response = restTemplate.exchange(baseUrl + "/balance", HttpMethod.GET,
-                makeAuthEntity(),Double.class);
-
-        Double tmpNum = response.getBody();
-        balance = tmpNum.doubleValue();
-        return balance;
-
+    public double updateBalance() {
+        String url = API_BASE_URL + "balance/";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authToken);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        ResponseEntity<Double> response = restTemplate.exchange(url, HttpMethod.GET, entity, Double.class);
+        return response.getBody();
     }
 
 }
