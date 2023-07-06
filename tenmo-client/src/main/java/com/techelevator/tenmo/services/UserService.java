@@ -23,7 +23,6 @@ public class UserService {
         headers.setBearerAuth(authToken);
         return new HttpEntity<>(headers);
     }
-
     private RestTemplate restTemplate;
     private String API_BASE_URL = "http://localhost:8080/";
 
@@ -31,7 +30,6 @@ public class UserService {
         this.restTemplate = new RestTemplate();
         this.API_BASE_URL = "http://localhost:8080/";
     }
-
     public List<User> getUserAccounts(AuthenticatedUser authenticatedUser) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authenticatedUser.getToken());
@@ -48,4 +46,4 @@ public class UserService {
         }
         return Collections.emptyList();
     }
-}
+} 
