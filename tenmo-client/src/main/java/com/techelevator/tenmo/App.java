@@ -142,7 +142,7 @@ public class App {
         }
 
         int receiverIndex = consoleService.promptForMenuSelection("Enter the index of the user to send TE Bucks to: ");
-        if (receiverIndex < 0 || receiverIndex >= accounts.size()) {
+        if (receiverIndex < 0 || receiverIndex > accounts.size()) {
             System.out.println("Invalid user index.");
             return;
         }
