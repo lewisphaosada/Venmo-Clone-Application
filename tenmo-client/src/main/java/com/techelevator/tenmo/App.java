@@ -2,8 +2,10 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import io.cucumber.java.en_old.Ac;
 
 public class App {
 
@@ -11,6 +13,9 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
+
+    //your code
+    AccountService accountService = new AccountService();
 
     private AuthenticatedUser currentUser;
 
@@ -57,6 +62,12 @@ public class App {
         currentUser = authenticationService.login(credentials);
         if (currentUser == null) {
             consoleService.printErrorMessage();
+            // your code
+
+
+        } else {
+            String token = currentUser.getToken();
+            accountService.setAuthToken(token);
         }
     }
 
@@ -86,6 +97,8 @@ public class App {
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
+        double balance = accountService.getBalace();
+        System.out.println("Your current balance is :" + balance);
 		
 	}
 
