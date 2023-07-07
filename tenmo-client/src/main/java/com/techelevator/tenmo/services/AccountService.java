@@ -7,9 +7,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+
 public class AccountService {
 
     String authToken = null;
+    private BigDecimal balance;
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
@@ -24,13 +27,25 @@ public class AccountService {
     private String API_BASE_URL = "http://localhost:8080/";
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public double updateBalance() {
-        String url = API_BASE_URL + "balance/";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(authToken);
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-        ResponseEntity<Double> response = restTemplate.exchange(url, HttpMethod.GET, entity, Double.class);
-        return response.getBody();
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public BigDecimal updateBalance() {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(authToken);
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+            ResponseEntity<BigDecimal> response = restTemplate.exchange(API_BASE_URL + "balance", HttpMethod.GET, entity, BigDecimal.class);
+            return response.getBody();
+        } catch (Exception e) {
+            System.out.println("Failed to retrieve the current balance. Please try again later.");
+            return null;
+        }
+    }
+
+    public void setBalance(BigDecimal newBalance) {
+        this.balance = newBalance;
     }
 
 }
