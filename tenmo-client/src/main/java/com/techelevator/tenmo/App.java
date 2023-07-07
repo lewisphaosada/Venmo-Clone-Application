@@ -110,6 +110,27 @@ public class App {
 
     private void viewTransferHistory() {
         // TODO Auto-generated method stub
+        List<Transfer> allTransfers = transferService.getUserTransfers(accountService.getAccountNumberByUserId(currentUser.getUser()));
+        System.out.println("");
+        System.out.println("*********************");
+        System.out.println("  Transfer History  ");
+        System.out.println("*********************");
+        System.out.println("");
+        for(Transfer transfer : allTransfers){
+            System.out.println("ID: " + transfer.getTransferId() + " | From: " + transfer.getAccountFrom() + " | To: "
+                    + accountService.getUserName(transfer.getAccountTo()) + " | Amount: $" + transfer.getAmount());
+        }
+        System.out.println("");
+        int transferSelection = consoleService.promptForInt("Please select a transfer ID to view details: ");
+        Transfer transferInDetail = transferService.getTransferByTransferId(transferSelection, currentUser.getToken());
+        System.out.println("");
+        System.out.println("----Transfer " + transferSelection + " Details----");
+        System.out.println("");
+        System.out.println("ID: " + transferInDetail.getTransferId() + "\n" + "Type: " + transferInDetail.getType() + "\n"
+        + "Status: " + transferInDetail.getDescription() + "\n" + "From: " + transferInDetail.getAccountFrom()
+        + "\n" + "To: " + accountService.getUserName(transferInDetail.getAccountTo()) + "\n" +
+                "Amount: " + transferInDetail.getAmount());
+        System.out.println("");
 
     }
 

@@ -1,12 +1,14 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Transfer;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class TransferService {
     String authToken = null;
@@ -41,6 +43,51 @@ public class TransferService {
         } catch (Exception e) {
             // Handle exception (e.g., log, display error message, etc.)
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public Transfer getTransferByTransferId(int transferId, String token) {
+        try {
+            String url = baseUrl + "transfers/" + transferId;
+            ResponseEntity<Transfer> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    makeAuthEntity(),
+                    Transfer.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            // Handle specific exception (e.g., log, display error message, etc.)
+            return null;
+        } catch (HttpServerErrorException e) {
+            // Handle specific exception (e.g., log, display error message, etc.)
+            return null;
+        } catch (Exception e) {
+            // Handle other exceptions (e.g., log, display error message, etc.)
+            return null;
+        }
+    }
+
+    public List<Transfer> getUserTransfers(int accountId) {
+        try {
+            String url = baseUrl + "accounts/" + accountId + "/transfers";
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    makeAuthEntity(),
+                    Transfer[].class
+            );
+            Transfer[] transfersArray = response.getBody();
+            return Arrays.asList(transfersArray);
+        } catch (HttpClientErrorException e) {
+            // Handle specific exception (e.g., log, display error message, etc.)
+            return Collections.emptyList();
+        } catch (HttpServerErrorException e) {
+            // Handle specific exception (e.g., log, display error message, etc.)
+            return Collections.emptyList();
+        } catch (Exception e) {
+            // Handle other exceptions (e.g., log, display error message, etc.)
+            return Collections.emptyList();
         }
     }
 }
