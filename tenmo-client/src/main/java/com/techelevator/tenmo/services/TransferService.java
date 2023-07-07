@@ -36,6 +36,13 @@ public class TransferService {
         try {
             HttpEntity<Transfer> entity = new HttpEntity<>(transfer);
             ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "transfers", entity, String.class);
+
+            // Check for error message indicating transfer to self
+            if (response.getStatusCode() == HttpStatus.BAD_REQUEST && response.getBody().contains("Cannot transfer funds to yourself.")) {
+                return ResponseEntity.badRequest().body("Cannot transfer funds to yourself.");
+            }
+
+
             return response;
         } catch (HttpClientErrorException e) {
             // Handle exception (e.g., log, display error message, etc.)
