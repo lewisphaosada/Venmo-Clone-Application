@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 
 @RestController
@@ -24,11 +25,11 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/balance", method = RequestMethod.GET)
-    public Double getBalance(Principal principal) {
+    public BigDecimal getBalance(Principal principal) {
         int userId = userDao.findIdByUsername(principal.getName());
         Account account = accountDao.getAccountByUserId(userId);
 
-        Double balance = null;
+        BigDecimal balance = null;
         if (account != null) {
             balance = account.getBalance();
         }

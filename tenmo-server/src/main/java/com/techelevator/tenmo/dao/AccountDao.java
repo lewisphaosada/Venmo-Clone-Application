@@ -6,4 +6,5 @@ public interface AccountDao {
 
     Account getAccountByUserId(int userId);
 
+    Account getAccountById(long accountId);
 }

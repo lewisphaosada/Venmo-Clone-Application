@@ -17,6 +17,7 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
     private AccountService accountService = new AccountService();
+    private UserService userService = new UserService();
 
     private TransferService transferService = new TransferService();
 
@@ -101,7 +102,7 @@ public class App {
 
     private void viewCurrentBalance() {
         try {
-            Double balance = accountService.updateBalance();
+            BigDecimal balance = accountService.updateBalance();
             System.out.println("Your current balance is: " + balance);
         } catch (Exception e) {
             System.out.println("Failed to retrieve the current balance. Please try again later.");
@@ -109,14 +110,26 @@ public class App {
     }
 
     private void viewTransferHistory() {
-        // TODO Auto-generated method stub
 
+        transferService.setAuthToken(currentUser.getToken());
+
+        List<Transfer> transfers = transferService.getTransfersForUser(currentUser.getToken(), currentUser.getUser().getId());
+
+        if (transfers.isEmpty()) {
+            System.out.println("No transfer history found.");
+        } else {
+            System.out.println("Transfer History:");
+            for (Transfer transfer : transfers) {
+                System.out.println(transfer);
+            }
+        }
     }
 
     private void viewPendingRequests() {
         // TODO Auto-generated method stub
 
     }
+
     private void requestBucks() {
         // TODO Auto-generated method stub
 
@@ -149,7 +162,13 @@ public class App {
 
         BigDecimal amount = consoleService.promptForBigDecimal("Enter the amount to send: ");
 
-        User receiver = accounts.get(receiverIndex - 1); // Adjust index by subtracting 1
+        User receiver = accounts.get(receiverIndex - 1);
+
+        //cannot transfer funds to yourself.
+        if (receiver.getId() == currentUser.getUser().getId()) {
+            System.out.println("Cannot transfer funds to yourself.");
+            return;
+        }
 
         Transfer transfer = new Transfer();
         transfer.setAccountFrom(currentUser.getUser().getId());
@@ -164,4 +183,5 @@ public class App {
         }
     }
 }
+
 
