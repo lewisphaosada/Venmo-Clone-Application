@@ -19,8 +19,8 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public void sendTransfer(Transfer transfer) {
-        String sql = "INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+        "VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, transfer.getTransferId(), transfer.getTransferTypeId(), transfer.getTransferStatusId(),
                 transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
@@ -28,9 +28,9 @@ public class JdbcTransferDao implements TransferDao{
     @Override
     public BigDecimal getAccountBalance(int userId) {
         String sql = "SELECT balance FROM account WHERE user_id = ?";
-        Double balance = jdbcTemplate.queryForObject(sql, Double.class, userId);
-        return BigDecimal.valueOf(balance);
+        return jdbcTemplate.queryForObject(sql, BigDecimal.class, userId);
     }
+
     @Override
     public List<User> getAvailableUsers(int senderId) {
         String sql = "SELECT user_id, username, password_hash, role FROM tenmo_user WHERE user_id = ?";
@@ -58,5 +58,4 @@ public class JdbcTransferDao implements TransferDao{
         String sql = "UPDATE account SET balance = ? WHERE user_id = ?";
         jdbcTemplate.update(sql, newBalance, userId);
     }
-
 }

@@ -10,9 +10,7 @@ public class Transfer {
     private int accountFrom;
     private int accountTo;
     private BigDecimal amount;
-
-    public Transfer() {
-    }
+    public Transfer(){}
 
     public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFrom, int accountTo, BigDecimal amount) {
         this.transferId = transferId;
@@ -22,7 +20,6 @@ public class Transfer {
         this.accountTo = accountTo;
         this.amount = amount;
     }
-
     public int getTransferId() {
         return transferId;
     }
@@ -69,31 +66,5 @@ public class Transfer {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public String getType() {
-        // Retrieve the transfer type based on transferTypeId
-        // Example implementation:
-        if (transferTypeId == 1) {
-            return "Internal Transfer";
-        } else if (transferTypeId == 2) {
-            return "External Transfer";
-        } else {
-            return "Unknown";
-        }
-    }
-
-    public String getDescription() {
-        // Retrieve the transfer description based on transferStatusId
-        // Example implementation:
-        if (transferStatusId == 1) {
-            return "Pending";
-        } else if (transferStatusId == 2) {
-            return "Approved";
-        } else if (transferStatusId == 3) {
-            return "Rejected";
-        } else {
-            return "Unknown";
-        }
     }
 }

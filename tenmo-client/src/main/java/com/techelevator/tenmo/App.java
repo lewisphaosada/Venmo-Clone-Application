@@ -101,7 +101,7 @@ public class App {
 
     private void viewCurrentBalance() {
         try {
-            BigDecimal balance = accountService.updateBalance();
+            Double balance = accountService.updateBalance();
             System.out.println("Your current balance is: " + balance);
         } catch (Exception e) {
             System.out.println("Failed to retrieve the current balance. Please try again later.");
@@ -110,27 +110,6 @@ public class App {
 
     private void viewTransferHistory() {
         // TODO Auto-generated method stub
-        List<Transfer> allTransfers = transferService.getUserTransfers(accountService.getAccountNumberByUserId(currentUser.getUser()));
-        System.out.println("");
-        System.out.println("*********************");
-        System.out.println("  Transfer History  ");
-        System.out.println("*********************");
-        System.out.println("");
-        for(Transfer transfer : allTransfers){
-            System.out.println("ID: " + transfer.getTransferId() + " | From: " + transfer.getAccountFrom() + " | To: "
-                    + accountService.getUserName(transfer.getAccountTo()) + " | Amount: $" + transfer.getAmount());
-        }
-        System.out.println("");
-        int transferSelection = consoleService.promptForInt("Please select a transfer ID to view details: ");
-        Transfer transferInDetail = transferService.getTransferByTransferId(transferSelection, currentUser.getToken());
-        System.out.println("");
-        System.out.println("----Transfer " + transferSelection + " Details----");
-        System.out.println("");
-        System.out.println("ID: " + transferInDetail.getTransferId() + "\n" + "Type: " + transferInDetail.getType() + "\n"
-        + "Status: " + transferInDetail.getDescription() + "\n" + "From: " + transferInDetail.getAccountFrom()
-        + "\n" + "To: " + accountService.getUserName(transferInDetail.getAccountTo()) + "\n" +
-                "Amount: " + transferInDetail.getAmount());
-        System.out.println("");
 
     }
 
@@ -138,7 +117,6 @@ public class App {
         // TODO Auto-generated method stub
 
     }
-
     private void requestBucks() {
         // TODO Auto-generated method stub
 
@@ -169,16 +147,9 @@ public class App {
             return;
         }
 
-
         BigDecimal amount = consoleService.promptForBigDecimal("Enter the amount to send: ");
 
         User receiver = accounts.get(receiverIndex - 1); // Adjust index by subtracting 1
-
-        //cannot transfer funds to yourself.
-        if (receiver.getId() == currentUser.getUser().getId()) {
-            System.out.println("Cannot transfer funds to yourself.");
-            return;
-        }
 
         Transfer transfer = new Transfer();
         transfer.setAccountFrom(currentUser.getUser().getId());
@@ -193,5 +164,4 @@ public class App {
         }
     }
 }
-
 
