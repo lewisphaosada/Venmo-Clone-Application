@@ -13,6 +13,7 @@ public interface TransferDao {
     List<User> getAvailableUsers(int senderId);
     boolean isTransferAllowed(int senderId, int receiverId, BigDecimal amount);
     void updateAccountBalance(int userId, BigDecimal newBalance);
+    List<Transfer> getTransfersForUser(int userId);
 
 }
 

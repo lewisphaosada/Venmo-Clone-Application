@@ -17,6 +17,7 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
     private AccountService accountService = new AccountService();
+    private UserService userService = new UserService();
 
     private TransferService transferService = new TransferService();
 
@@ -114,8 +115,19 @@ public class App {
     }
 
     private void viewTransferHistory() {
-        // TODO Auto-generated method stub
 
+        transferService.setAuthToken(currentUser.getToken());
+
+        List<Transfer> transfers = transferService.getTransfersForUser(currentUser.getToken(), currentUser.getUser().getId());
+
+        if (transfers.isEmpty()) {
+            System.out.println("No transfer history found.");
+        } else {
+            System.out.println("Transfer History:");
+            for (Transfer transfer : transfers) {
+                System.out.println(transfer);
+            }
+        }
     }
 
     private void viewPendingRequests() {
@@ -153,10 +165,9 @@ public class App {
             return;
         }
 
-
         BigDecimal amount = consoleService.promptForBigDecimal("Enter the amount to send: ");
 
-        User receiver = accounts.get(receiverIndex - 1); // Adjust index by subtracting 1
+        User receiver = accounts.get(receiverIndex - 1);
 
         //cannot transfer funds to yourself.
         if (receiver.getId() == currentUser.getUser().getId()) {
