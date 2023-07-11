@@ -89,7 +89,7 @@ public class App {
             if (menuSelection == 1) {
                 viewCurrentBalance();
             } else if (menuSelection == 2) {
-                viewTransferHistory();
+                //viewTransferHistory();
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
@@ -114,21 +114,21 @@ public class App {
         }
     }
 
-    private void viewTransferHistory() {
-
-        transferService.setAuthToken(currentUser.getToken());
-
-        List<Transfer> transfers = transferService.getTransfersForUser(currentUser.getToken(), currentUser.getUser().getId());
-
-        if (transfers.isEmpty()) {
-            System.out.println("No transfer history found.");
-        } else {
-            System.out.println("Transfer History:");
-            for (Transfer transfer : transfers) {
-                System.out.println(transfer);
-            }
-        }
-    }
+//    private void viewTransferHistory() {
+//
+//        transferService.setAuthToken(currentUser.getToken());
+//
+//        List<Transfer> transfers = transferService.getTransfersForUser(currentUser.getToken(), currentUser.getUser().getId());
+//
+//        if (transfers.isEmpty()) {
+//            System.out.println("No transfer history found.");
+//        } else {
+//            System.out.println("Transfer History:");
+//            for (Transfer transfer : transfers) {
+//                System.out.println(transfer);
+//            }
+//        }
+//    }
 
     private void viewPendingRequests() {
         // TODO Auto-generated method stub
