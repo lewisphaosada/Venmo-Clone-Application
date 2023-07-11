@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.model.Account;
@@ -22,7 +23,9 @@ public class TransferController {
 
     public TransferController(JdbcTemplate jdbcTemplate) {
         this.transferDao = new JdbcTransferDao(jdbcTemplate);
+        this.accountDao = new JdbcAccountDao(jdbcTemplate);
     }
+
 
     @RequestMapping(path = "/transfers", method = RequestMethod.POST)
     public ResponseEntity<String> sendTransfer(@RequestBody Transfer transfer) {
@@ -37,17 +40,17 @@ public class TransferController {
 
             // Check if sender and receiver accounts exist
             if (senderAccount == null || receiverAccount == null) {
-                return ResponseEntity.badRequest().body(null);
+                return ResponseEntity.badRequest().body("invalid accounts");
             }
 
-            // Make sure we cannot send to the same account
+//             Make sure we cannot send to the same account
             if (senderAccount.getUserId() == receiverAccount.getUserId()) {
-                return ResponseEntity.badRequest().body(null);
+                return ResponseEntity.badRequest().body("Cant send to yourself");
             }
 
             // Check if transfer is allowed based on criteria
             if (!transferDao.isTransferAllowed(senderId, receiverId, amount)) {
-                return ResponseEntity.badRequest().body(null);
+                return ResponseEntity.badRequest().body("transfer dosent meet criteria");
             }
 
             // Update sender's balance
@@ -65,6 +68,7 @@ public class TransferController {
 
             return ResponseEntity.ok("Transfer successful.");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

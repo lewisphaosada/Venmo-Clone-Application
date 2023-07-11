@@ -32,7 +32,10 @@ public class TransferService {
 
     public ResponseEntity<String> sendTransfer(Transfer transfer) {
         try {
-            HttpEntity<Transfer> entity = new HttpEntity<>(transfer);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(authToken);
+            HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
             ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "transfers", entity, String.class);
 
             // Check for error message indicating transfer to self
@@ -44,9 +47,11 @@ public class TransferService {
             return response;
         } catch (HttpClientErrorException e) {
             // Handle exception (e.g., log, display error message, etc.)
+            e.printStackTrace();
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         } catch (Exception e) {
             // Handle exception (e.g., log, display error message, etc.)
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

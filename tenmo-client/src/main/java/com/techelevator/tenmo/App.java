@@ -71,8 +71,13 @@ public class App {
 
         } else {
             String token = currentUser.getToken();
-            accountService.setAuthToken(token);
+            setAuthenticationToken(token);
         }
+    }
+
+    private void setAuthenticationToken(String token) {
+        accountService.setAuthToken(token);
+        transferService.setAuthToken(token);
     }
 
     private void mainMenu() {
